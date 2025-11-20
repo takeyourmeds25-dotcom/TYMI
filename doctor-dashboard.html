@@ -1,0 +1,1003 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+ 
+<title>Patient Login</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Glacial+Indifference&family=Hanken+Grotesk:wght@300;400&display=swap" rel="stylesheet"/>
+
+<style>
+:root {
+  --deep-green: #29423B;
+  --brick-red: #823A38;
+  --coral: #DB6A6A;
+  --mustard: #D7A346;
+  --sky: #D6E3ED;
+  --rose: #F8CED4;
+  --font-primary: 'Glacial Indifference', sans-serif;
+  --font-secondary: 'Hanken Grotesk', sans-serif;
+}
+
+body {
+  font-family: var(--font-secondary);
+  background: var(--sky);
+  color: #222;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+header {
+  background-color: var(--deep-green);
+  color: white;
+  padding: 16px 10%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+header h1 {
+  font-family: var(--font-primary);
+  font-size: 1.6rem;
+  margin: 0;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  margin-left: 18px;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+nav a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+/* Login Box */
+.container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.box {
+  background: #fff;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  width: 340px;
+  text-align: center;
+}
+
+.box h3 {
+  font-family: var(--font-primary);
+  color: var(--brick-red);
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-family: var(--font-secondary);
+}
+
+button {
+  margin-top: 20px;
+  padding: 12px;
+  width: 100%;
+  background: var(--deep-green);
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: var(--font-secondary);
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: var(--brick-red);
+}
+
+#msg {
+  color: var(--brick-red);
+  margin-top: 12px;
+  font-size: 0.9rem;
+}
+
+footer {
+  text-align: center;
+  padding: 16px;
+  background: var(--rose);
+  color: #333;
+  font-size: 0.9rem;
+}
+
+    .wrap{max-width:1200px;margin:0 auto}
+    /* UPDATED: Changed card background to white, border to light gray */
+    .card{background:#ffffff;padding:16px;border-radius:10px;margin-bottom:12px;border:1px solid #e0e0e0}
+    /* Kept buttons similar, but adjusted text color for better contrast on light theme */
+    button{padding:8px 10px;border-radius:8px;border:0;background:#06b6d4;color:#ffffff;cursor:pointer}
+    /* UPDATED: Ghost button colors for light theme */
+    .ghost{background:transparent;border:1px solid #ccc;color:#666}
+    table{width:100%;border-collapse:collapse;margin-top:8px}
+    /* UPDATED: Table border and text color for light theme */
+    th,td{padding:8px;text-align:left;border-bottom:1px dashed #eee;color:#333}
+    /* UPDATED: Input field colors for light theme */
+    input,select,textarea{padding:8px;border-radius:6px;border:1px solid #ccc;background:#ffffff;color:#333}
+    /* UPDATED: Muted color for light theme */
+    .muted{color:#888;font-size:13px}
+    .med-form{display:flex;gap:8px;flex-wrap:wrap}
+    .med-form > * { flex:1 1 220px; }
+    .row{display:flex;gap:12px;align-items:center}
+    .flex-1{flex:1}
+    #chartWrap{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+    /* UPDATED: Chart background for light theme */
+    canvas{background:#fafafa; border-radius: 4px; padding: 6px;} 
+    /* UPDATED: Panel background for light theme */
+    .panel{background:#f0f3f5;padding:12px;border-radius:8px;margin-top:8px;border:1px solid #ddd}
+    .small{font-size:13px}
+    .hidden{display:none}
+
+    /* Patient Details Resizable Grid */
+    .pd-grid {
+      display: grid;
+      grid-template-columns: var(--pd-col-1-width) var(--pd-col-2-width);
+      gap: 12px;
+      position: relative;
+      user-select: none;
+      --pd-col-1-width: 50%; /* Default split */
+      --pd-col-2-width: 50%;
+    }
+
+    /* Splitter style */
+    .pd-splitter {
+      width: 12px;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: var(--pd-col-1-width);
+      transform: translateX(-50%);
+      cursor: col-resize;
+      z-index: 10;
+      /* UPDATED: Splitter colors for light theme */
+      background: rgba(0, 0, 0, 0.05);
+      border-left: 1px solid #ccc;
+      border-right: 1px solid #ccc;
+    }
+    
+    /* Chart Container Styling */
+    .patient-chart-container {
+        margin-top: 12px;
+        margin-bottom: 12px;
+    }
+
+    /* Responsive stacking for patient details */
+    @media (max-width: 768px) {
+      .pd-grid {
+        grid-template-columns: 1fr;
+      }
+      .pd-splitter {
+        display: none;
+      }
+    }
+ 
+</style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <header>
+    <h1>Take Your Medicine Innovations: Doctor Dashboard</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="doctor-login.html">Doctor Portal</a>
+      <a href="patient-login.html">Patient Portal</a>
+      <a href="change-password.html">Change Password</a>
+      <a href="create-account.html">Create Account</a>
+    </nav>
+  </header>
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <h2 style="margin:0">Doctor Dashboard</h2>
+          <div id="who" class="muted"></div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="refresh" class="ghost">Refresh</button>
+          <button id="logout" class="ghost">Logout</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap">
+        <div style="flex:1;min-width:320px">
+          <h3 style="margin:0">Overall Adherence (All Assigned Patients)</h3>
+          <div id="chartWrap">
+            <div style="width:260px;height:260px">
+              <canvas id="overallChart"></canvas>
+            </div>
+            <div class="flex-1">
+              <div class="muted">Totals (Assigned Patients)</div>
+              <table style="max-width:420px">
+                <tr><th>Metric</th><th>Value</th></tr>
+                <tr><td>Total Patients</td><td id="totalPatients">0</td></tr>
+                <tr><td>Total Events</td><td id="totalEvents">0</td></tr>
+                <tr><td>Taken</td><td id="totalTaken">0</td></tr>
+                <tr><td>Missed (proxy)</td><td id="totalMissed">0</td></tr>
+                <tr><td>Avg adherence (proxy)</td><td id="avgAdherence">—</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div style="width:320px;min-width:260px">
+          <h3 style="margin:0">Select Patient</h3>
+          <div style="margin-top:8px;display:flex;gap:8px">
+            <select id="patientSelector" style="flex:1;padding:8px;border-radius:6px;background:#ffffff;color:#333;border:1px solid #ccc"></select>
+            <button id="viewPatient" title="Open patient details">View</button>
+          </div>
+          <div class="muted" style="margin-top:8px">Choose an approved patient assigned to you.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="approvals">
+      <h3 style="margin:0">Pending Patient Approvals</h3>
+      <div id="pendingWrap" style="margin-top:10px" class="muted">Loading...</div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3 style="margin:0">Patient Details</h3>
+        <div class="muted" id="detailNote">Select a patient and click <strong>View</strong></div>
+      </div>
+
+      <div id="patientPanel" class="panel hidden">
+        <div class="pd-grid">
+          <div id="pd-col-1" style="min-width:260px">
+            <div class="muted">Patient</div>
+            <div id="pd_name" style="font-weight:700;font-size:18px">—</div>
+            <div class="muted" id="pd_assigned">Assigned doctor: —</div>
+            <div style="margin-top:10px">
+              <button id="exportPatientCSV" class="ghost">Export Patient CSV</button>
+              <button id="closePatient" class="ghost" style="margin-left:8px">Close</button>
+            </div>
+
+            <div class="patient-chart-container">
+              <div class="muted" id="pd_stats" style="margin-bottom:6px"></div>
+              
+              <h4 style="margin:8px 0">Taken vs Missed (7d)</h4>
+              <div style="width:180px;height:180px;"><canvas id="patientPieChart"></canvas></div>
+
+              <h4 style="margin:12px 0 8px 0">Daily Trend (7d)</h4>
+              <canvas id="patientDailyTrendChart"></canvas>
+
+              <h4 style="margin:12px 0 8px 0">Adherence by Medication (7d)</h4>
+              <canvas id="patientMedBarChart"></canvas>
+              
+              <h4 style="margin:12px 0 8px 0">AM vs PM Adherence (7d)</h4>
+              <canvas id="patientAmPmChart"></canvas>
+            </div>
+          </div>
+
+          <div id="pd-splitter" class="pd-splitter"></div>
+
+          <div id="pd-col-2" style="min-width:260px;overflow:hidden">
+            <div class="muted">Medications</div>
+            <div id="pd_meds" style="margin-top:8px"></div>
+
+            <div style="margin-top:12px">
+              <div class="muted">Recent Events</div>
+              <div id="pd_events" style="margin-top:8px"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0">Add Medication for a Patient</h3>
+      <div style="margin-top:8px" class="med-form">
+        <select id="selectPatient"><option value="">-- select patient --</option></select>
+        <input id="d_medName" placeholder="Medication name" />
+        <select id="d_medType"><option value="pill">Pill</option><option value="liquid">Liquid</option><option value="injection">Injection</option><option value="other">Other</option></select>
+        <input id="d_medDose" placeholder="Dosage (e.g., 10 mg)" />
+        <select id="d_medSchedule"><option value="am">AM</option><option value="pm">PM</option><option value="both">Both</option><option value="custom">Custom</option></select>
+        <input id="d_medInstr" placeholder="Instructions (take with meal...)" />
+        <button id="d_addMedBtn">Add Medication (doctor)</button>
+      </div>
+      <div class="muted" style="margin-top:8px">Doctors can assign meds to any approved patient assigned to them.</div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0">Patients & Med Summary (Assigned)</h3>
+      <div id="patientSummary" style="margin-top:8px"></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0">Medication Management (Edit/Delete)</h3>
+      <div id="medManagement" style="margin-top:8px"></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0">Adherence Logs (Assigned Patients)</h3>
+      <div id="logs" style="margin-top:8px"></div>
+    </div>
+  </div>
+
+<script>
+/* -------------------------
+    Storage helpers (same keys as system)
+    ------------------------- */
+function uid(){ return Math.random().toString(36).slice(2,9); }
+function loadUsers(){ try{return JSON.parse(localStorage.getItem('users')||'[]')}catch(e){return []} }
+function saveUsers(u){ localStorage.setItem('users', JSON.stringify(u)); }
+function loadLogs(){ try{return JSON.parse(localStorage.getItem('adherenceLogs')||'{}')}catch(e){return {}} }
+function saveLogs(l){ localStorage.setItem('adherenceLogs', JSON.stringify(l)); }
+function loadMeds(){ try{return JSON.parse(localStorage.getItem('medications')||'{}')}catch(e){return {}} }
+function saveMeds(m){ localStorage.setItem('medications', JSON.stringify(m)); }
+
+/* -------------------------
+    Basic auth guard
+    ------------------------- */
+const current = localStorage.getItem('currentUser');
+const role = localStorage.getItem('currentRole');
+if(!current || role!=='doctor'){ alert('Not logged in as doctor'); window.location.href='doctor-login.html'; }
+document.getElementById('who').textContent = 'Logged in as: ' + current;
+
+// --- Sample Data Definitions ---
+const SAMPLE_PATIENT = 'patient1';
+const SAMPLE_DOCTOR = 'doctor1';
+
+const sampleMeds_patient1 = [
+  { id: "med1", name: "Metformin", type: "pill", dosage: "500 mg", schedule: "am", instructions: "Take with breakfast" },
+  { id: "med2", name: "Lisinopril", type: "pill", dosage: "10 mg", schedule: "am", instructions: "Take with water" },
+  { id: "med3", name: "Atorvastatin", type: "pill", dosage: "20 mg", schedule: "pm", instructions: "Take before bed" },
+  { id: "med4", name: "Vitamin D", type: "pill", dosage: "1000 IU", schedule: "both", instructions: "Take after meals" }
+];
+
+// --- Sample Data Generation Function ---
+function generateAdherenceData(patientId, medsList) {
+    let logs = loadLogs();
+    logs[patientId] = [];
+    const today = new Date();
+    
+    // Generate logs for the last 7 days
+    for (let i = 6; i >= 0; i--) { 
+        const date = new Date(today);
+        date.setDate(today.getDate() - i);
+        
+        medsList.forEach(med => {
+            // Simulate adherence: AM (80%), PM (70%)
+            const prob = (med.schedule === "pm") ? 0.7 : 0.8; 
+            
+            // Log for AM dose (if applicable)
+            if ((med.schedule === 'am' || med.schedule === 'both') && Math.random() < prob) {
+                logs[patientId].push({
+                    ts: new Date(date.getFullYear(), date.getMonth(), date.getDate(), 8, 0, 0).toISOString(),
+                    type: "taken", medId: med.id, medName: med.name, schedule: 'am', // Log as AM slot
+                    note: med.instructions, by: patientId
+                });
+            }
+            
+            // Log for PM dose (if applicable)
+            if ((med.schedule === 'pm' || med.schedule === 'both') && Math.random() < prob) {
+                logs[patientId].push({
+                    ts: new Date(date.getFullYear(), date.getMonth(), date.getDate(), 20, 0, 0).toISOString(),
+                    type: "taken", medId: med.id, medName: med.name, schedule: 'pm', // Log as PM slot
+                    note: med.instructions, by: patientId
+                });
+            }
+        });
+    }
+    saveLogs(logs);
+}
+
+/* -------------------------
+    Seed demo 
+    ------------------------- */
+(function seedDemo(){
+    let users = loadUsers();
+    let medsStore = loadMeds();
+    
+    // 1. Ensure Doctor and Patient accounts exist
+    if(!users.find(u=>u.username===SAMPLE_DOCTOR)){
+        users.push({username:SAMPLE_DOCTOR,password:'docpass',role:'doctor',approved:true,pendingPatients:[]});
+    }
+    if(!users.find(u=>u.username===SAMPLE_PATIENT)){
+        users.push({
+            username:SAMPLE_PATIENT,
+            password:'patpass',
+            role:'patient',
+            approved:true, // Auto-approve for demo
+            preferredDoctor:SAMPLE_DOCTOR,
+            assignedDoctor:SAMPLE_DOCTOR
+        });
+    }
+    saveUsers(users);
+
+    // 2. Ensure Medications and Logs for patient1 exist
+    if(!medsStore[SAMPLE_PATIENT] || medsStore[SAMPLE_PATIENT].length === 0){
+        // Add meds, marked as doctor-added
+        medsStore[SAMPLE_PATIENT] = sampleMeds_patient1.map(m => ({ ...m, addedBy: 'doctor:' + SAMPLE_DOCTOR }));
+        saveMeds(medsStore);
+        
+        // Generate logs for the new meds
+        generateAdherenceData(SAMPLE_PATIENT, medsStore[SAMPLE_PATIENT]);
+    }
+})();
+
+/* -------------------------
+    Chart objects & Instances
+    ------------------------- */
+let overallChart = null;
+let patientPieChart = null;
+let patientDailyTrendChart = null;
+let patientMedBarChart = null;
+let patientAmPmChart = null;
+
+const chartColors = {
+    taken: '#2d9f6b',
+    missed: '#ef4444',
+    assigned: '#06b6d4'
+};
+
+
+function buildOverallChart(taken, missed){
+  const ctx = document.getElementById('overallChart').getContext('2d');
+  if(overallChart) overallChart.destroy();
+  overallChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: ['Taken','Missed (proxy)'],
+      datasets: [{
+        data: [taken, missed],
+        backgroundColor: [chartColors.taken, chartColors.missed],
+        hoverOffset: 6
+      }]
+    },
+    options: {
+      plugins: { legend: { position: 'bottom', labels: { color: '#333' } } },
+      responsive: true,
+      maintainAspectRatio: true 
+    }
+  });
+}
+
+/**
+ * Builds all 4 patient-specific charts for the given patient.
+ */
+function buildPatientCharts(username){
+  const logs = loadLogs()[username] || [];
+  const meds = loadMeds()[username] || [];
+  
+  // --- Data Processing for Charts (Last 7 Days) ---
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  
+  const dailyData = {};
+  const today = new Date();
+  
+  // 1. Initialize data for the last 7 days (date strings in YYYY-MM-DD format)
+  for (let i = 6; i >= 0; i--) { 
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const dateStr = d.toISOString().split('T')[0];
+    dailyData[dateStr] = { assigned: 0, taken: 0 };
+  }
+
+  // Calculate assigned doses for the 7-day period
+  meds.forEach(m => {
+    for (const dateStr in dailyData) {
+      dailyData[dateStr].assigned += (m.schedule === 'both' ? 2 : 1);
+    }
+  });
+
+  // Filter and count taken doses for the 7-day period
+  logs.filter(l => new Date(l.ts) >= sevenDaysAgo).forEach(l => {
+    const dateStr = new Date(l.ts).toISOString().split('T')[0];
+    if (dailyData[dateStr]) {
+      dailyData[dateStr].taken++;
+    }
+  });
+
+  const dailyLabels = Object.keys(dailyData).map(d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+  const dailyTaken = Object.values(dailyData).map(d => d.taken);
+  const dailyAssigned = Object.values(dailyData).map(d => d.assigned);
+  
+  // 2. Taken vs Missed Data (Overall Adherence for the 7-day period)
+  const totalAssigned = dailyAssigned.reduce((a, b) => a + b, 0);
+  const totalTaken = dailyTaken.reduce((a, b) => a + b, 0);
+  const totalMissed = Math.max(0, totalAssigned - totalTaken); 
+  
+  // Update stats display
+  document.getElementById('pd_stats').textContent = `Taken (7d): ${totalTaken} • Missed (est): ${totalMissed} • Total Logs: ${logs.length}`;
+
+
+  // 3. Adherence by Medication (Bar Chart - Last 7 days)
+  const medAdherence = {};
+  meds.forEach(m => {
+    medAdherence[m.name] = { id: m.id, assigned: 7 * (m.schedule === 'both' ? 2 : 1), taken: 0 }; 
+  });
+
+  logs.filter(l => new Date(l.ts) >= sevenDaysAgo).forEach(l => {
+    const med = medAdherence[l.medName];
+    if(med) med.taken++;
+  });
+  
+  const medBarLabels = Object.keys(medAdherence);
+  const medBarData = medBarLabels.map(name => {
+    const m = medAdherence[name];
+    return m.assigned > 0 ? (m.taken / m.assigned * 100) : 0; 
+  });
+  
+  // 4. AM vs PM Adherence (Last 7 days)
+  let amAssigned = 0;
+  let pmAssigned = 0;
+  meds.forEach(m => {
+    if (m.schedule === 'am' || m.schedule === 'both') amAssigned += 7;
+    if (m.schedule === 'pm' || m.schedule === 'both') pmAssigned += 7;
+  });
+
+  const recentLogs = logs.filter(l => new Date(l.ts) >= sevenDaysAgo);
+
+  const amTaken = recentLogs.filter(l => l.schedule === 'am' || (l.schedule === 'both' && new Date(l.ts).getHours() < 12)).length;
+  const pmTaken = recentLogs.filter(l => l.schedule === 'pm' || (l.schedule === 'both' && new Date(l.ts).getHours() >= 12)).length;
+
+  const amAdherence = amAssigned > 0 ? amTaken / amAssigned * 100 : 0;
+  const pmAdherence = pmAssigned > 0 ? pmTaken / pmAssigned * 100 : 0;
+
+
+  // --- Chart Drawing ---
+  
+  // 1. Patient Pie Chart (Taken vs Missed)
+  const ctxPie = document.getElementById('patientPieChart').getContext('2d');
+  if (patientPieChart) patientPieChart.destroy();
+  patientPieChart = new Chart(ctxPie, {
+    type: 'doughnut',
+    data: {
+      labels: ['Taken','Missed (est)'],
+      datasets: [{ data: [totalTaken, totalMissed], backgroundColor: [chartColors.taken, chartColors.missed] }]
+    },
+    options: { cutout: '60%', plugins: { legend: { display: false } }, responsive: true, maintainAspectRatio: true }
+  });
+
+  // 2. Patient Daily Trend Chart (Line)
+  const ctxDaily = document.getElementById('patientDailyTrendChart').getContext('2d');
+  if (patientDailyTrendChart) patientDailyTrendChart.destroy();
+  patientDailyTrendChart = new Chart(ctxDaily, {
+    type: 'line',
+    data: {
+      labels: dailyLabels,
+      datasets: [
+        { label: 'Assigned', data: dailyAssigned, borderColor: chartColors.assigned, fill: false, tension: 0.1 },
+        { label: 'Taken', data: dailyTaken, borderColor: chartColors.taken, fill: false, tension: 0.1 }
+      ]
+    },
+    options: { maintainAspectRatio: true, plugins: { legend: { labels: { color: '#666' } } }, scales: { x: { ticks: { color: '#666' } }, y: { ticks: { color: '#666' } } } }
+  });
+
+  // 3. Adherence by Medication (Bar Chart)
+  const ctxMedBar = document.getElementById('patientMedBarChart').getContext('2d');
+  if (patientMedBarChart) patientMedBarChart.destroy();
+  patientMedBarChart = new Chart(ctxMedBar, {
+    type: 'bar',
+    data: {
+      labels: medBarLabels,
+      datasets: [{
+        label: 'Adherence (%)',
+        data: medBarData,
+        backgroundColor: chartColors.assigned,
+      }]
+    },
+    options: { 
+        maintainAspectRatio: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, max: 100, ticks: { color: '#666' } }, x: { ticks: { color: '#666' } } }
+    }
+  });
+  
+  // 4. AM vs PM Adherence (Bar Chart)
+  const ctxAmPm = document.getElementById('patientAmPmChart').getContext('2d');
+  if (patientAmPmChart) patientAmPmChart.destroy();
+  patientAmPmChart = new Chart(ctxAmPm, {
+    type: 'bar',
+    data: {
+      labels: ['AM', 'PM'],
+      datasets: [{
+        label: 'Adherence (%)',
+        data: [amAdherence, pmAdherence],
+        backgroundColor: [chartColors.taken, chartColors.assigned],
+      }]
+    },
+    options: { 
+        maintainAspectRatio: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, max: 100, ticks: { color: '#666' } }, x: { ticks: { color: '#666' } } }
+    }
+  });
+
+}
+
+
+/* -------------------------
+    Compute overall adherence & update UI
+    ------------------------- */
+function computeOverall(){
+  const users = loadUsers();
+  const assignedPatients = users.filter(u=>u.role==='patient' && u.approved && u.assignedDoctor === current); 
+  const logs = loadLogs();
+  let overallTaken = 0, overallEvents = 0;
+  
+  assignedPatients.forEach(p=>{
+      const evs = logs[p.username] || [];
+      overallTaken += evs.filter(e=>e.type==='taken').length;
+      overallEvents += evs.length;
+  });
+  
+  // Note: 'overallEvents' counts all logs, including 'taken' events. 
+  // A better proxy for 'missed' is total assigned doses minus taken doses 
+  // from the past 7 days across all patients. For simplicity and consistency with the chart logic, 
+  // we'll use a rough proxy of all events minus taken events.
+  const overallMissed = overallEvents - overallTaken; 
+  const avgAdh = overallEvents ? Math.round((overallTaken/overallEvents)*100) : '—';
+  
+  document.getElementById('totalPatients').textContent = assignedPatients.length;
+  document.getElementById('totalEvents').textContent = overallEvents;
+  document.getElementById('totalTaken').textContent = overallTaken;
+  document.getElementById('totalMissed').textContent = overallMissed;
+  document.getElementById('avgAdherence').textContent = (avgAdh==='—'? '—' : avgAdh + '%');
+  buildOverallChart(overallTaken, overallMissed);
+}
+
+/* -------------------------
+    Pending approvals
+    ------------------------- */
+function renderPending(){
+  const users = loadUsers(); 
+  const pending = users.filter(u=>u.role==='patient' && !u.approved && u.preferredDoctor === current);
+  const container = document.getElementById('pendingWrap');
+  if(pending.length===0){ container.innerHTML = '<div class="muted">No pending requests for you</div>'; return; }
+  container.innerHTML = '<table><tr><th>Username</th><th>Action</th></tr>' + pending.map(p=>{
+    return `<tr><td>${p.username}</td><td><button onclick="approve('${p.username}')">Approve & Assign</button></td></tr>`;
+  }).join('') + '</table>';
+}
+function approve(username){
+  const users = loadUsers(); const u = users.find(x=>x.username===username);
+  if(!u) return alert('User missing');
+  u.approved = true; u.assignedDoctor = current; 
+  
+  users.forEach(doc=>{
+      if(doc.role==='doctor' && Array.isArray(doc.pendingPatients)){
+          doc.pendingPatients = doc.pendingPatients.filter(p=>p !== username);
+      }
+  });
+
+  saveUsers(users);
+  const meds = loadMeds(); if(!meds[username]) meds[username]=[]; saveMeds(meds);
+  renderPending(); refreshUI();
+}
+
+/* -------------------------
+    Patient selector + Patient details panel
+    ------------------------- */
+function getPatientAdherence(username){
+  const logs = loadLogs(); 
+  const arr = logs[username] || [];
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  const recentLogs = arr.filter(e => new Date(e.ts) >= sevenDaysAgo);
+  
+  const taken = recentLogs.filter(e=>e.type==='taken').length;
+  const meds = loadMeds()[username] || [];
+  let assignedDoses = 0;
+  meds.forEach(m => {
+    assignedDoses += 7 * (m.schedule === 'both' ? 2 : 1);
+  });
+  
+  const missed = Math.max(0, assignedDoses - taken);
+  
+  return { taken, missed, totalEvents: arr.length };
+}
+
+function populatePatientSelector(){
+  const sel = document.getElementById('patientSelector'); sel.innerHTML = '<option value="">-- select patient --</option>';
+  loadUsers().filter(u=>u.role==='patient' && u.approved && u.assignedDoctor === current).forEach(p=>{
+    const opt = document.createElement('option'); opt.value = p.username; opt.textContent = p.username; sel.appendChild(opt);
+  });
+}
+function fillDoctorPatientSelect(){
+  const sel = document.getElementById('selectPatient'); sel.innerHTML = '<option value="">-- select patient --</option>';
+  loadUsers().filter(u=>u.role==='patient' && u.approved && u.assignedDoctor === current).forEach(p=>{
+    const opt = document.createElement('option'); opt.value = p.username; opt.textContent = p.username; sel.appendChild(opt);
+  });
+}
+
+document.getElementById('viewPatient').addEventListener('click', ()=>{
+  const username = document.getElementById('patientSelector').value;
+  if(!username) return alert('Choose a patient');
+  openPatientPanel(username);
+});
+document.getElementById('closePatient').addEventListener('click', ()=>{ 
+    document.getElementById('patientPanel').classList.add('hidden'); 
+});
+
+function openPatientPanel(username){
+  const users = loadUsers(); 
+  const patient = users.find(u=>u.username===username && u.role==='patient');
+  if(!patient) return alert('Patient not found');
+  document.getElementById('patientPanel').classList.remove('hidden');
+  document.getElementById('pd_name').textContent = patient.username;
+  document.getElementById('pd_assigned').textContent = 'Assigned doctor: ' + (patient.assignedDoctor||'—');
+  
+  renderPatientMeds(username);
+  renderPatientEvents(username);
+  
+  buildPatientCharts(username);
+}
+
+/* export patient CSV */
+document.getElementById('exportPatientCSV').addEventListener('click', ()=>{
+  const username = document.getElementById('pd_name').textContent;
+  if(!username || username==='—') return alert('Open a patient first');
+  const logs = loadLogs(); const arr = logs[username] || [];
+  let csv = 'time,patient,event,medName,note\n';
+  arr.forEach(e=>{
+    csv += `"${e.ts}","${username}","${e.type}","${e.medName||''}","${(e.note||'').replace(/"/g,'""')}"\n`;
+  });
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'}); const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = `${username}_adherence.csv`; a.click(); a.remove();
+});
+
+/* -------------------------
+    Render patient meds and events
+    ------------------------- */
+function renderPatientMeds(username){
+  const meds = loadMeds(); const list = meds[username] || [];
+  const wrap = document.getElementById('pd_meds'); if(list.length===0){ wrap.innerHTML = '<div class="muted">No medications assigned</div>'; return;}
+  let html = '<table><tr><th>Med</th><th>Dosage</th><th>Schedule</th><th>Instr</th></tr>';
+  list.forEach(m => { html += `<tr><td>${m.name}</td><td>${m.dosage||''}</td><td>${m.schedule||''}</td><td>${m.instructions||''}</td></tr>`; });
+  html += '</table>'; wrap.innerHTML = html;
+}
+
+function renderPatientEvents(username){
+  const logs = loadLogs(); const arr = logs[username] || [];
+  const wrap = document.getElementById('pd_events');
+  if(arr.length===0) { wrap.innerHTML = '<div class="muted">No events</div>'; return; }
+  let html = '<table><tr><th>Time</th><th>Med</th><th>Type</th><th>Note</th></tr>';
+  arr.slice().reverse().forEach(e => {
+    html += `<tr><td>${new Date(e.ts).toLocaleString()}</td><td>${e.medName||e.medId||'—'}</td><td>${e.type}</td><td>${e.note||''}</td></tr>`;
+  });
+  html += '</table>'; wrap.innerHTML = html;
+}
+
+/* -------------------------
+    Add medication (doctor)
+    ------------------------- */
+document.getElementById('d_addMedBtn').addEventListener('click', ()=>{
+  const patient = document.getElementById('selectPatient').value;
+  const name = document.getElementById('d_medName').value.trim();
+  const type = document.getElementById('d_medType').value;
+  const dosage = document.getElementById('d_medDose').value.trim();
+  const schedule = document.getElementById('d_medSchedule').value;
+  const instr = document.getElementById('d_medInstr').value.trim();
+  if(!patient){ alert('Select patient'); return; }
+  if(!name){ alert('Enter medication name'); return; }
+  const meds = loadMeds(); if(!meds[patient]) meds[patient]=[];
+  const entry = { id: 'med-'+uid(), name, type, dosage, schedule, instructions: instr, addedBy: 'doctor:' + current, createdAt: new Date().toISOString() };
+  meds[patient].push(entry); saveMeds(meds);
+  
+  if (document.getElementById('pd_name').textContent === patient) {
+      renderPatientMeds(patient); 
+      buildPatientCharts(patient); 
+  }
+  renderMedManagement(); 
+  renderSummary(); 
+  alert('Medication added for ' + patient);
+});
+
+/* -------------------------
+    Patient summary / med management / logs (reuse earlier functions)
+    ------------------------- */
+function renderSummary(){
+  const users = loadUsers(); 
+  const patients = users.filter(u=>u.role==='patient' && u.approved && u.assignedDoctor === current); 
+  const meds = loadMeds(); 
+  const html = '<table><tr><th>Patient</th><th>Meds</th><th>Events</th><th>Adherence % (7d est)</th></tr>' + patients.map(p=>{
+    const pMeds = meds[p.username] || [];
+    const { taken, missed } = getPatientAdherence(p.username); 
+    const evs = loadLogs()[p.username] || [];
+    const denom = taken+missed;
+    const pct = denom ? Math.round((taken/denom)*100) : '—';
+    return `<tr><td>${p.username}</td><td>${pMeds.length}</td><td>${evs.length}</td><td>${pct}</td></tr>`;
+  }).join('') + '</table>';
+  document.getElementById('patientSummary').innerHTML = html;
+}
+
+function renderMedManagement(){
+  const meds = loadMeds();
+  const users = loadUsers().filter(u=>u.role==='patient' && u.approved && u.assignedDoctor === current);
+  const wrap = document.getElementById('medManagement');
+  if(users.length===0){ wrap.innerHTML = '<div class="muted">No approved patients assigned to you</div>'; return; }
+  let html = '';
+  users.forEach(p=>{
+    html += `<h4 style="margin-bottom:6px">${p.username}</h4>`;
+    const list = meds[p.username] || [];
+    if(list.length===0){ html += '<div class="muted">No meds</div>'; }
+    else{
+      html += '<table><tr><th>Med</th><th>Schedule</th><th>Instr</th><th>AddedBy</th><th>Actions</th></tr>';
+      list.forEach(m=>{
+        html += `<tr><td>${m.name} ${m.dosage?('— '+m.dosage):''}</td><td>${m.schedule}</td><td>${m.instructions||''}</td><td>${m.addedBy||''}</td><td>
+                  <button onclick="editMed('${p.username}','${m.id}')">Edit</button>
+                  <button onclick="deleteMedDoctor('${p.username}','${m.id}')" style="margin-left:6px" class="ghost">Delete</button>
+                  </td></tr>`;
+      });
+      html += '</table>';
+    }
+  });
+  wrap.innerHTML = html;
+}
+function editMed(patientUser, medId){
+  const meds = loadMeds(); const list = meds[patientUser] || []; const m = list.find(x=>x.id===medId);
+  if(!m) return alert('Missing med');
+  const name = prompt('Medication name', m.name); if(name===null) return;
+  const dosage = prompt('Dosage', m.dosage||''); if(dosage===null) return;
+  const schedule = prompt('Schedule (am/pm/both/custom)', m.schedule||''); if(schedule===null) return;
+  const instr = prompt('Instructions', m.instructions||''); if(instr===null) return;
+  m.name = name; m.dosage = dosage; m.schedule = schedule; m.instructions = instr;
+  saveMeds(meds); renderMedManagement(); renderSummary();
+  if (document.getElementById('pd_name').textContent === patientUser) {
+      renderPatientMeds(patientUser); 
+      buildPatientCharts(patientUser);
+  }
+}
+function deleteMedDoctor(patientUser, medId){
+  if(!confirm('Delete medication?')) return;
+  const meds = loadMeds(); meds[patientUser] = (meds[patientUser]||[]).filter(m=>m.id!==medId); saveMeds(meds);
+  renderMedManagement(); renderSummary();
+  if (document.getElementById('pd_name').textContent === patientUser) {
+      renderPatientMeds(patientUser); 
+      buildPatientCharts(patientUser);
+  }
+}
+
+/* -------------------------
+    Logs rendering (global)
+    ------------------------- */
+function renderLogs(){
+  const logs = loadLogs(); 
+  const assignedPatients = loadUsers().filter(u => u.role === 'patient' && u.approved && u.assignedDoctor === current).map(u => u.username);
+  const wrap = document.getElementById('logs');
+  
+  if(assignedPatients.length === 0){ wrap.innerHTML = '<div class="muted">No logs from your assigned patients yet</div>'; return; }
+  
+  let allEvents = [];
+
+  assignedPatients.forEach(k => {
+      const arr = logs[k] || [];
+      allEvents.push(...arr.map(e => ({ ...e, patient: k })));
+  });
+  
+  if (allEvents.length === 0) {
+      wrap.innerHTML = '<div class="muted">No events from your assigned patients yet</div>';
+      return;
+  }
+
+  allEvents.sort((a, b) => new Date(b.ts) - new Date(a.ts));
+  
+  let html = '<table><tr><th>Time</th><th>Patient</th><th>Med</th><th>Type</th><th>Note</th></tr>';
+  allEvents.forEach(e => {
+      html += `<tr><td>${new Date(e.ts).toLocaleString()}</td><td>${e.patient}</td><td>${e.medName||e.medId}</td><td>${e.type}</td><td>${e.note||''}</td></tr>`;
+  });
+  html += '</table>';
+  wrap.innerHTML = html;
+}
+
+/* -------------------------
+    Resizable Panel Logic
+    ------------------------- */
+function setupResizablePatientPanel() {
+    const grid = document.querySelector('.pd-grid');
+    const splitter = document.getElementById('pd-splitter');
+    let isDragging = false;
+
+    if (!grid || !splitter) return;
+
+    // 1. Mouse Down (Start Drag)
+    splitter.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        document.body.style.cursor = 'col-resize';
+        grid.style.pointerEvents = 'none'; 
+        e.preventDefault(); 
+    });
+
+    // 2. Mouse Move (Dragging)
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+
+        const gridRect = grid.getBoundingClientRect();
+        let newCol1Width = (e.clientX - gridRect.left) / gridRect.width * 100;
+
+        // Set limits (min 20% / max 80%)
+        newCol1Width = Math.max(20, Math.min(80, newCol1Width));
+        
+        const newCol2Width = 100 - newCol1Width;
+
+        // Apply new widths using CSS variables
+        grid.style.setProperty('--pd-col-1-width', `${newCol1Width}%`);
+        grid.style.setProperty('--pd-col-2-width', `${newCol2Width}%`);
+        
+        // Crucial for Chart.js to redraw
+        const openPatient = document.getElementById('pd_name').textContent;
+        if (openPatient && openPatient !== '—') {
+            buildPatientCharts(openPatient);
+        }
+    });
+
+    // 3. Mouse Up (End Drag)
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            document.body.style.cursor = 'default';
+            grid.style.pointerEvents = 'auto';
+        }
+    });
+}
+
+
+/* -------------------------
+    Initialization / Event Handlers
+    ------------------------- */
+function refreshUI(){
+  computeOverall();
+  renderPending();
+  populatePatientSelector();
+  fillDoctorPatientSelect();
+  renderSummary();
+  renderMedManagement();
+  renderLogs();
+  setupResizablePatientPanel();
+}
+
+document.getElementById('refresh').addEventListener('click', refreshUI);
+document.getElementById('logout').addEventListener('click', ()=>{
+  localStorage.removeItem('currentUser'); localStorage.removeItem('currentRole'); window.location.href='doctor-login.html';
+});
+// Final initialization call
+refreshUI();
+
+// ----------------------------------------------------
+//Auto-select and open patient1 for demonstration
+document.getElementById('patientSelector').value = 'patient1';
+openPatientPanel('patient1');
+// ----------------------------------------------------
+
+// --- Fix for missing setupResizablePatientPanel logic ---
+setupResizablePatientPanel();
+
+</script>
+</body>
+</html>

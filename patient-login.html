@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Patient Login</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Glacial+Indifference&family=Hanken+Grotesk:wght@300;400&display=swap" rel="stylesheet"/>
+
+<style>
+:root {
+  --deep-green: #29423B;
+  --brick-red: #823A38;
+  --coral: #DB6A6A;
+  --mustard: #D7A346;
+  --sky: #D6E3ED;
+  --rose: #F8CED4;
+  --font-primary: 'Glacial Indifference', sans-serif;
+  --font-secondary: 'Hanken Grotesk', sans-serif;
+}
+
+body {
+  font-family: var(--font-secondary);
+  background: var(--sky);
+  color: #222;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+header {
+  background-color: var(--deep-green);
+  color: white;
+  padding: 16px 10%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+header h1 {
+  font-family: var(--font-primary);
+  font-size: 1.6rem;
+  margin: 0;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  margin-left: 18px;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+nav a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+/* Login Box */
+.container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.box {
+  background: #fff;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  width: 340px;
+  text-align: center;
+}
+
+.box h3 {
+  font-family: var(--font-primary);
+  color: var(--brick-red);
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-family: var(--font-secondary);
+}
+
+button {
+  margin-top: 20px;
+  padding: 12px;
+  width: 100%;
+  background: var(--deep-green);
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: var(--font-secondary);
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: var(--brick-red);
+}
+
+#msg {
+  color: var(--brick-red);
+  margin-top: 12px;
+  font-size: 0.9rem;
+}
+
+footer {
+  text-align: center;
+  padding: 16px;
+  background: var(--rose);
+  color: #333;
+  font-size: 0.9rem;
+}
+</style>
+</head>
+
+<body>
+  <header>
+    <h1>Take Your Medicine Innovations</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="doctor-login.html">Doctor Portal</a>
+      <a href="change-password.html">Change Password</a>
+      <a href="create-account.html">Create Account</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="box">
+      <h3>Patient Login</h3>
+      <input id="username" placeholder="Username" />
+      <input id="password" placeholder="Password" type="password" />
+      <button id="login">Login</button>
+      <div id="msg"></div>
+    </div>
+  </div>
+
+  <footer>
+    © 2025 Take Your Medicine Innovations | Senior Capstone
+  </footer>
+
+// ...existing code...
+<script>
+// ---------- Load or initialize users ----------
+function loadUsers(){ 
+  try{ return JSON.parse(localStorage.getItem('users')||'[]'); }
+  catch(e){
+    console.error('Failed to parse users from localStorage', e);
+    return [];
+  }
+}
+
+function saveUsers(users){
+  try{
+    localStorage.setItem('users', JSON.stringify(users));
+  }catch(e){
+    console.error('Failed to save users to localStorage', e);
+  }
+}
+
+// ---------- Upsert default patient for reliable testing ----------
+let users = loadUsers();
+const defaultPatientUsername = 'patient1';
+const defaultPatientPassword = 'patientpass';
+
+const idx = users.findIndex(u => u.username === defaultPatientUsername && u.role === 'patient');
+if (idx === -1) {
+  users.push({
+    username: defaultPatientUsername,
+    password: defaultPatientPassword,
+    role: 'patient',
+    approved: true,
+    preferredDoctor: 'doctor1'
+  });
+  saveUsers(users);
+  console.log(`Default patient '${defaultPatientUsername}' added to localStorage.`);
+} else {
+  // Ensure password/approved/preferredDoctor are as expected (update if needed)
+  const u = users[idx];
+  let changed = false;
+  if (u.password !== defaultPatientPassword){ u.password = defaultPatientPassword; changed = true; }
+  if (u.approved !== true){ u.approved = true; changed = true; }
+  if (!u.preferredDoctor){ u.preferredDoctor = 'doctor1'; changed = true; }
+  if (changed){
+    users[idx] = u;
+    saveUsers(users);
+    console.log(`Default patient '${defaultPatientUsername}' updated in localStorage.`);
+  } else {
+    console.log(`Default patient '${defaultPatientUsername}' already present and up-to-date.`);
+  }
+}
+
+//show current users
+console.log('Current users:', users);
+
+// ---------- Login ----------
+document.getElementById('login').addEventListener('click', ()=> doLogin());
+
+function doLogin(){
+  const u = document.getElementById('username').value.trim();
+  const p = document.getElementById('password').value.trim();
+  const msg = document.getElementById('msg');
+  msg.textContent = '';
+
+  // Reload users list to ensure we have the most current data
+  users = loadUsers();
+  console.log('Attempt login for:', { username: u, password: p });
+  console.log('Users list:', users);
+
+  const found = users.find(x => x.username === u && x.role === 'patient' && x.password === p);
+
+  if(found){
+    if(found.approved === false){
+      msg.textContent = 'Account pending doctor approval.';
+      return;
+    }
+
+    // Save login and doctor info to localStorage
+    localStorage.setItem('currentUser', found.username);
+    localStorage.setItem('currentRole', 'patient');
+    localStorage.setItem('preferredDoctor', found.preferredDoctor || '');
+    window.location.href = 'patient-dashboard.html';
+  } else {
+    msg.textContent = 'Invalid patient credentials';
+    console.warn('Login failed for', u);
+  }
+}
+
+// Allow Enter key to submit
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Enter'){
+    doLogin();
+  }
+});
+</script>
+
+</body>
+</html>

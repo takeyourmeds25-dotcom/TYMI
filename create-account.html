@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Create Account — Take Your Medicine Innovations</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Glacial+Indifference&family=Hanken+Grotesk:wght@300;400&display=swap" rel="stylesheet"/>
+
+<style>
+:root {
+  --deep-green: #29423B;
+  --brick-red: #823A38;
+  --coral: #DB6A6A;
+  --mustard: #D7A346;
+  --sky: #D6E3ED;
+  --rose: #F8CED4;
+  --font-primary: 'Glacial Indifference', sans-serif;
+  --font-secondary: 'Hanken Grotesk', sans-serif;
+}
+
+body {
+  font-family: var(--font-secondary);
+  background: var(--sky);
+  color: #222;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+header {
+  background-color: var(--deep-green);
+  color: white;
+  padding: 16px 10%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+header h1 {
+  font-family: var(--font-primary);
+  font-size: 1.6rem;
+  margin: 0;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  margin-left: 18px;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+nav a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+/* Card */
+.container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.card {
+  background: #fff;
+  max-width: 460px;
+  width: 100%;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.card h3 {
+  font-family: var(--font-primary);
+  color: var(--brick-red);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-top: 14px;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-family: var(--font-secondary);
+}
+
+button {
+  margin-top: 20px;
+  padding: 12px;
+  width: 100%;
+  background: var(--brick-red);
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: var(--font-secondary);
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: var(--deep-green);
+}
+
+.muted {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 8px;
+  text-align: center;
+}
+
+a {
+  color: var(--brick-red);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+footer {
+  text-align: center;
+  padding: 16px;
+  background: var(--rose);
+  color: #333;
+  font-size: 0.9rem;
+}
+</style>
+</head>
+
+<body>
+  <header>
+    <h1>Take Your Medicine Innovations</h1>
+    <nav>
+      <a href="./index.html">Home</a>
+      <a href="./doctor-login.html">Doctor Login</a>
+      <a href="./patient-login.html">Patient Login</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <h3>Create Account</h3>
+
+      <label>Role
+        <select id="role">
+          <option value="patient">Patient</option>
+          <option value="doctor">Doctor</option>
+        </select>
+      </label>
+
+      <label>Username
+        <input id="username" placeholder="Enter username" />
+      </label>
+
+      <label>Password
+        <input id="password" type="password" placeholder="Enter password" />
+      </label>
+
+      <div id="prefDoctorWrap" style="display:block">
+        <label>Preferred Doctor (optional)
+          <select id="preferredDoctor">
+            <option value="">-- no preference --</option>
+          </select>
+        </label>
+        <div class="muted">Patient accounts require doctor approval before login.</div>
+      </div>
+
+      <button id="createBtn">Create Account</button>
+      <div id="msg" class="muted"></div>
+      <p class="muted">After creating a patient account it is marked <strong>Pending</strong>. A doctor can approve and assign the patient.</p>
+      <p class="muted"><a href="index.html">← Back to Home</a></p>
+    </div>
+  </div>
+
+  <footer>
+    © 2025 Take Your Medicine Innovations | Senior Capstone
+  </footer>
+
+<script>
+/******** User "spreadsheet" in localStorage *********
+ * users: array of {username,password,role,approved,preferredDoctor,assignedDoctor}
+ ***************************************************/
+function loadUsers(){ try{ return JSON.parse(localStorage.getItem('users')||'[]'); }catch(e){ return []; } }
+function saveUsers(u){ localStorage.setItem('users', JSON.stringify(u)); }
+
+// seed demo doctors if none exist
+(function seed(){
+  const u = loadUsers();
+  if(!u.find(x=>x.role==='doctor')){
+    u.push({username:'doctor1',password:'docpass',role:'doctor',approved:true});
+    u.push({username:'doctor2',password:'doc2',role:'doctor',approved:true});
+    saveUsers(u);
+  }
+})();
+
+// fill preferredDoctor dropdown
+function refreshDoctors(){
+  const sel = document.getElementById('preferredDoctor');
+  sel.innerHTML = '<option value="">-- no preference --</option>';
+  loadUsers().filter(x=>x.role==='doctor').forEach(d=>{
+    const opt=document.createElement('option');
+    opt.value=d.username;
+    opt.textContent=d.username;
+    sel.appendChild(opt);
+  });
+}
+refreshDoctors();
+
+document.getElementById('role').addEventListener('change', (e)=>{
+  document.getElementById('prefDoctorWrap').style.display = e.target.value==='patient' ? 'block' : 'none';
+});
+
+document.getElementById('createBtn').addEventListener('click', ()=>{
+  const user=document.getElementById('username').value.trim();
+  const pass=document.getElementById('password').value.trim();
+  const role=document.getElementById('role').value;
+  const pref=document.getElementById('preferredDoctor').value || null;
+  const msg=document.getElementById('msg');
+  if(!user || !pass){ msg.textContent='Enter username and password'; return; }
+  const users=loadUsers();
+  if(users.find(u=>u.username===user)){ msg.textContent='Username exists'; return; }
+  const entry = { username:user, password:pass, role:role, approved: role==='doctor', preferredDoctor: pref, assignedDoctor: null };
+  if(role==='patient'){ entry.approved=false; }
+  users.push(entry);
+  saveUsers(users);
+  msg.textContent = role==='patient' ? 'Patient created and marked Pending approval.' : 'Doctor account created.';
+  refreshDoctors();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Doctor Login</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Glacial+Indifference&family=Hanken+Grotesk:wght@300;400&display=swap" rel="stylesheet"/>
+
+<style>
+:root {
+  --deep-green: #29423B;
+  --brick-red: #823A38;
+  --coral: #DB6A6A;
+  --mustard: #D7A346;
+  --sky: #D6E3ED;
+  --rose: #F8CED4;
+  --font-primary: 'Glacial Indifference', sans-serif;
+  --font-secondary: 'Hanken Grotesk', sans-serif;
+}
+
+body {
+  font-family: var(--font-secondary);
+  background: var(--sky);
+  color: #222;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+header {
+  background-color: var(--deep-green);
+  color: white;
+  padding: 16px 10%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+header h1 {
+  font-family: var(--font-primary);
+  font-size: 1.6rem;
+  margin: 0;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  margin-left: 18px;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+nav a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+/* Login Box */
+.container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.box {
+  background: #fff;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  width: 340px;
+  text-align: center;
+}
+
+.box h3 {
+  font-family: var(--font-primary);
+  color: var(--brick-red);
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-family: var(--font-secondary);
+}
+
+button {
+  margin-top: 20px;
+  padding: 12px;
+  width: 100%;
+  background: var(--deep-green);
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: var(--font-secondary);
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: var(--brick-red);
+}
+
+#msg {
+  color: var(--brick-red);
+  margin-top: 12px;
+  font-size: 0.9rem;
+}
+
+footer {
+  text-align: center;
+  padding: 16px;
+  background: var(--rose);
+  color: #333;
+  font-size: 0.9rem;
+}
+</style>
+</head>
+
+<body>
+  <header>
+    <h1>Take Your Medicine Innovations</h1>
+    <nav>
+      <a href="./index.html">Home</a>
+      <a href="./patient-login.html">Patient Portal</a>
+      <a href="./change-password.html">Change Password</a>
+      <a href="./create-account.html">Create Account</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="box">
+      <h3>Doctor Login</h3>
+      <input id="username" placeholder="Username" />
+      <input id="password" placeholder="Password" type="password" />
+      <button id="login">Login</button>
+      <div id="msg"></div>
+    </div>
+  </div>
+
+  <footer>
+    © 2025 Take Your Medicine Innovations | Senior Capstone
+  </footer>
+
+<script>
+// ---------- Load or initialize users ----------
+function loadUsers(){ 
+  try{ return JSON.parse(localStorage.getItem('users')||'[]'); }
+  catch(e){ return []; }
+}
+
+function saveUsers(users){
+  localStorage.setItem('users', JSON.stringify(users));
+}
+
+// ---------- Add default doctor if none exist ----------
+let users = loadUsers();
+if(!users.find(u=>u.role==='doctor')){
+  users.push({username:'doctor1', password:'docpass', role:'doctor'});
+  saveUsers(users);
+}
+
+// ---------- Login ----------
+document.getElementById('login').addEventListener('click', ()=>{
+  const u = document.getElementById('username').value.trim();
+  const p = document.getElementById('password').value.trim();
+  const msg = document.getElementById('msg');
+  users = loadUsers();
+  const found = users.find(x=>x.username===u && x.role==='doctor' && x.password===p);
+  if(found){
+    localStorage.setItem('currentUser', u);
+    localStorage.setItem('currentRole', 'doctor');
+    window.location.href='doctor-dashboard.html';
+  } else{
+    msg.textContent='Invalid doctor credentials';
+  }
+});
+</script>
+</body>
+</html>
