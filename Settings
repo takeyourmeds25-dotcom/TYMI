@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Patient Login</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Glacial+Indifference&family=Hanken+Grotesk:wght@300;400&display=swap" rel="stylesheet"/>
+
+<style>
+:root {
+  --deep-green: #29423B;
+  --brick-red: #823A38;
+  --coral: #DB6A6A;
+  --mustard: #D7A346;
+  --sky: #D6E3ED;
+  --rose: #F8CED4;
+  --font-primary: 'Glacial Indifference', sans-serif;
+  --font-secondary: 'Hanken Grotesk', sans-serif;
+}
+
+body {
+  font-family: var(--font-secondary);
+  background: var(--sky);
+  color: #222;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+header {
+  background-color: var(--deep-green);
+  color: white;
+  padding: 16px 10%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+header h1 {
+  font-family: var(--font-primary);
+  font-size: 1.6rem;
+  margin: 0;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  margin-left: 18px;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+nav a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+/* Login Box */
+.container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.box {
+  background: #fff;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  width: 340px;
+  text-align: center;
+}
+
+.box h3 {
+  font-family: var(--font-primary);
+  color: var(--brick-red);
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-family: var(--font-secondary);
+}
+
+button {
+  margin-top: 20px;
+  padding: 12px;
+  width: 100%;
+  background: var(--deep-green);
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: var(--font-secondary);
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: var(--brick-red);
+}
+
+#msg {
+  color: var(--brick-red);
+  margin-top: 12px;
+  font-size: 0.9rem;
+}
+
+footer {
+  text-align: center;
+  padding: 16px;
+  background: var(--rose);
+  color: #333;
+  font-size: 0.9rem;
+}
+/* --- Settings Tab Specific Styles --- */
+.settings-container {
+    max-width: 600px;
+    padding: 15px;
+    margin: 0 auto; /* Center the settings panel */
+}
+
+.setting-item {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.setting-item label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--text-color);
+}
+
+.setting-item input[type="text"],
+.setting-item input[type="email"],
+.setting-item input[type="password"],
+.setting-item input[type="tel"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1em;
+}
+
+.disabled-input {
+    background-color: #eee;
+    color: #888;
+    cursor: not-allowed;
+}
+
+.checkbox-item {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #eee;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.checkbox-item label {
+    margin-bottom: 0;
+    font-weight: 400;
+}
+
+.checkbox-item input[type="checkbox"] {
+    transform: scale(1.5); /* Make checkbox easier to click */
+}
+
+/* Horizontal Rule Styling */
+hr {
+    border: 0;
+    height: 1px;
+    background: #ddd;
+    margin: 20px 0;
+}
+
+/* Button Styling (Assuming you have a save button style) */
+#saveSettingsBtn {
+    background-color: var(--deep-green); 
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s;
+}
+
+#saveSettingsBtn:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+</style>
+</head>
+
+<body>
+  <header>
+    <h1>Take Your Medicine Innovations</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="doctor-login.html">Doctor Portal</a>
+      <a href="change-password.html">Change Password</a>
+      <a href="create-account.html">Create Account</a>
+      <a href="settings.html"></a>Settings</a>
+
+    </nav>
+  </header>
+
+
+
+
+
+
+<div id="tabContent_settings" class="tab-content">
+    <div class="settings-container">
+        <h3 style="margin-top: 0;">User Profile</h3>
+        <div class="setting-item">
+            <label for="settingsUsername">Username (Email):</label>
+            <input type="email" id="settingsUsername" disabled class="disabled-input">
+        </div>
+        <div class="setting-item">
+            <label for="settingsFirstName">First Name:</label>
+            <input type="text" id="settingsFirstName">
+        </div>
+        <div class="setting-item">
+            <label for="settingsLastName">Last Name:</label>
+            <input type="text" id="settingsLastName">
+        </div>
+        <div class="setting-item">
+            <label for="settingsPassword">Update Password:</label>
+            <input type="password" id="settingsPassword" placeholder="Enter new password (optional)">
+        </div>
+
+        <hr>
+
+        <h3>Healthcare Provider</h3>
+        <div class="setting-item">
+            <label for="settingsDoctorName">Doctor/Clinic Name:</label>
+            <input type="text" id="settingsDoctorName" placeholder="Dr. Smith, etc.">
+        </div>
+        <div class="setting-item">
+            <label for="settingsDoctorContact">Contact/Phone:</label>
+            <input type="tel" id="settingsDoctorContact" placeholder="(555) 555-5555">
+        </div>
+
+        <hr>
+
+        <h3>App Preferences</h3>
+        <div class="setting-item checkbox-item">
+            <label for="settingsNotifications">Enable Adherence Notifications</label>
+            <input type="checkbox" id="settingsNotifications">
+        </div>
+        <div class="setting-item checkbox-item">
+            <label for="settingsDarkMode">Dark Mode (Coming Soon)</label>
+            <input type="checkbox" id="settingsDarkMode" disabled>
+        </div>
+        
+        <button id="saveSettingsBtn">Save Changes</button>
+        <span id="settingsMessage" class="muted" style="margin-left: 10px;"></span>
+    </div>
+</div>
+</body>
+<script>
+/* ------------------------------------------------ */
+/* --- SETTINGS FUNCTIONS --- */
+/* ------------------------------------------------ */
+
+function loadAllSettings(){ 
+    try{ 
+        return JSON.parse(localStorage.getItem('userSettings')||'{}'); 
+    } catch(e){ 
+        console.error(e); 
+        return {}; 
+    } 
+}
+
+function saveAllSettings(s){ 
+    localStorage.setItem('userSettings', JSON.stringify(s)); 
+}
+
+function loadUserSettings() {
+    const userStr = localStorage.getItem('loggedInUser');
+    const userId = userStr ? JSON.parse(userStr).id : 'default';
+    const allSettings = loadAllSettings();
+    
+    // Define a default structure to ensure all fields exist
+    const defaultSettings = {
+        firstName: '',
+        lastName: '',
+        doctorName: '',
+        doctorContact: '',
+        notifications: true,
+        darkMode: false,
+        // Internal field for password storage (though handling this securely is complex)
+        // For this context, we focus on the other fields.
+    };
+    
+    return { ...defaultSettings, ...(allSettings[userId] || {}) };
+}
+
+function renderSettings() {
+    const userStr = localStorage.getItem('loggedInUser');
+    if (!userStr) return; 
+    
+    const loggedInUser = JSON.parse(userStr);
+    const settings = loadUserSettings();
+
+    // 1. User Profile Fields
+    document.getElementById('settingsUsername').value = loggedInUser.email || loggedInUser.id;
+    document.getElementById('settingsFirstName').value = settings.firstName || loggedInUser.firstName || '';
+    document.getElementById('settingsLastName').value = settings.lastName || loggedInUser.lastName || '';
+    // Note: Password field remains empty for security
+
+    // 2. Healthcare Provider Fields
+    document.getElementById('settingsDoctorName').value = settings.doctorName || '';
+    document.getElementById('settingsDoctorContact').value = settings.doctorContact || '';
+
+    // 3. App Preferences
+    document.getElementById('settingsNotifications').checked = settings.notifications;
+    document.getElementById('settingsDarkMode').checked = settings.darkMode;
+    
+    document.getElementById('settingsMessage').textContent = '';
+}
+
+function handleSaveSettings() {
+    const userStr = localStorage.getItem('loggedInUser');
+    if (!userStr) return; 
+    
+    const loggedInUser = JSON.parse(userStr);
+    const userId = loggedInUser.id;
+    const allSettings = loadAllSettings();
+    let userSettings = allSettings[userId] || {};
+
+    // Get values from the form
+    const newFirstName = document.getElementById('settingsFirstName').value.trim();
+    const newLastName = document.getElementById('settingsLastName').value.trim();
+    const newPassword = document.getElementById('settingsPassword').value.trim(); // Only store if not empty
+
+    // 1. Update User Details (for display/session)
+    loggedInUser.firstName = newFirstName;
+    loggedInUser.lastName = newLastName;
+    localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
+    
+    // 2. Update and store persistent settings
+    userSettings.firstName = newFirstName;
+    userSettings.lastName = newLastName;
+    userSettings.doctorName = document.getElementById('settingsDoctorName').value.trim();
+    userSettings.doctorContact = document.getElementById('settingsDoctorContact').value.trim();
+    userSettings.notifications = document.getElementById('settingsNotifications').checked;
+    userSettings.darkMode = document.getElementById('settingsDarkMode').checked;
+    
+    // Handle password update (simplified, ideally this is done via an API)
+    if (newPassword) {
+        // You would typically hash and save the password here
+        console.log("Password change requested. (Not securely stored in this local demo)");
+        document.getElementById('settingsPassword').value = ''; // Clear input after "saving"
+    }
+
+    allSettings[userId] = userSettings;
+    saveAllSettings(allSettings);
+    
+    // Update dashboard header immediately
+    document.getElementById('heading').textContent = `${newFirstName}'s Dashboard`;
+    document.getElementById('settingsMessage').textContent = 'Settings saved! ✅';
+    
+    // Refresh the view
+    renderSettings();
+}
+
+// ------------------------------------------------
+
+// You must update the event listeners in your existing JS file:
+// 1. Add 'settings' to your tab handling function (if necessary, depends on your structure)
+// 2. Add the save button listener to your DOMContentLoaded block:
+
+/*
+document.addEventListener('DOMContentLoaded', async () => {
+    // ... existing initialization ...
+    document.getElementById('saveSettingsBtn').addEventListener('click', handleSaveSettings);
+    // ... existing initialization ...
+});
+*/
+
+// And ensure your handleTabRendering function calls renderSettings:
+/*
+async function handleTabRendering(tab) {
+    const meds = loadMeds();
+    switch (tab) {
+        // ... existing cases ...
+        case 'pet':
+            renderPetStatus();
+            renderCustomizationOptions();
+            break;
+        case 'settings': // <--- ADD THIS CASE
+            renderSettings();
+            break;
+        case 'data':
+            renderCharts(); 
+            break;
+    }
+}
+*/    
+    
+</script>

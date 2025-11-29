@@ -210,7 +210,7 @@ console.log('Current users:', users);
 // ---------- Login ----------
 document.getElementById('login').addEventListener('click', ()=> doLogin());
 
-function doLogin(){
+async function doLogin(){
   const u = document.getElementById('username').value.trim();
   const p = document.getElementById('password').value.trim();
   const msg = document.getElementById('msg');
@@ -229,11 +229,42 @@ function doLogin(){
       return;
     }
 
-    // Save login and doctor info to localStorage
-    localStorage.setItem('currentUser', found.username);
-    localStorage.setItem('currentRole', 'patient');
-    localStorage.setItem('preferredDoctor', found.preferredDoctor || '');
-    window.location.href = 'patient-dashboard.html';
+      // Save under both keys for compatibility: `currentUser` (legacy) and `loggedInUser` (dashboard expects this)
+      const userSession = {
+        username: found.username,
+        role: found.role,
+        preferredDoctor: found.preferredDoctor || null,
+      };
+
+      // Prefer using the bridged Storage when available; otherwise fall back to localStorage.
+      const sessionStr = JSON.stringify(userSession);
+      const loggedInStr = JSON.stringify({ id: found.username, firstName: found.username, lastName: '' });
+
+      if (window.Storage && typeof window.Storage.setItem === 'function') {
+        try {
+          await Storage.setItem('currentUser', sessionStr);
+        } catch (e) {
+          console.warn('Storage.setItem currentUser failed:', e);
+          try { localStorage.setItem('currentUser', sessionStr); } catch (le) { console.warn('localStorage fallback failed:', le); }
+        }
+
+        try {
+          await Storage.setItem('loggedInUser', loggedInStr);
+        } catch (e) {
+          console.warn('Storage.setItem loggedInUser failed:', e);
+          try { localStorage.setItem('loggedInUser', loggedInStr); } catch (le) { console.warn('localStorage fallback failed:', le); }
+        }
+      } else {
+        try {
+          localStorage.setItem('currentUser', sessionStr);
+          localStorage.setItem('loggedInUser', loggedInStr);
+        } catch (e) {
+          console.warn('localStorage setItem failed:', e);
+        }
+      }
+
+      // Redirect to the dashboard
+      window.location.href = 'patient-dashboard.html';
   } else {
     msg.textContent = 'Invalid patient credentials';
     console.warn('Login failed for', u);

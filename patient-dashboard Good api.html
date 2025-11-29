@@ -347,7 +347,6 @@ input,select,textarea{padding:8px;border-radius:6px;border:1px solid #ccc;backgr
 
   <div class="container">
     <div class="box">
-        <div id="dashboard-content"></div>
         <h2 id="heading">Patient Dashboard</h2>
         <div id="info" class="muted"></div>
         
@@ -362,7 +361,6 @@ input,select,textarea{padding:8px;border-radius:6px;border:1px solid #ccc;backgr
             <button id="tabData" data-tab="data">Data & Trends</button>
             <button id="refreshBtn" class="ghost smallbtn" style="margin-left:auto;">Refresh</button>
         </div>
-        
 
         <div id="tabContent_medications" class="tab-content active">
             <h3>Current Medications</h3>
@@ -392,10 +390,7 @@ input,select,textarea{padding:8px;border-radius:6px;border:1px solid #ccc;backgr
                 <textarea id="medInstr" placeholder="Take with meal / empty stomach / etc." rows="2"></textarea>
               </label>
               <div style="margin-top:8px">
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <button id="addMedicationBtn" class="primary-btn">Add Medication</button>
-                <button id="scanBottleBtn" class="primary-btn">Scan Bottle</button>
-            </div>
+                <button id="addMedBtn" class="smallbtn">Add Medication</button>
               </div>
             </div>
         </div>
@@ -465,7 +460,6 @@ input,select,textarea{padding:8px;border-radius:6px;border:1px solid #ccc;backgr
         </div>
     </div>
   </div>
-  </div>
 
 <div id="symptomOverlay" class="modal-overlay hidden" aria-hidden="true">
   <div class="symptom-modal" role="dialog" aria-modal="true" aria-labelledby="symptomTitle">
@@ -479,162 +473,12 @@ input,select,textarea{padding:8px;border-radius:6px;border:1px solid #ccc;backgr
       <button type="button" class="symptom-btn" data-symptom="Fatigue">Fatigue</button>
     </div>
     <textarea id="symptomText" class="symptom-text" rows="3" placeholder="Describe any other symptoms or notes..."></textarea>
-        <div class="symptom-row" style="margin-top:10px">
-            <button type="button" id="symptomClose" class="ghost">Cancel</button>
-            <button type="button" id="symptomCancel" class="ghost">Skip & Log</button>
-           <button type="button" id="symptomSubmit" class="ghost">Submit</button>
-</div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:10px">
+      <button type="button" id="symptomCancel" class="ghost">Skip & Log</button>
+      <button type="button" id="symptomSubmit" class="">Submit</button>
+    </div>
   </div>
-<script>
-/* Inlined _storage.js to avoid bundler 404/MIME issues when loaded inside WebView */
-
-/* ============================================================
- * storage.js
- * FINAL FIX FOR REDECLARATION ERROR
- * ============================================================ */
-
-// 1. Internal Constant Declaration (This must be the only place it is declared)
-const STORAGE_KEY_PREFIX = 'TYMI_'; 
-
-// 2. SAFELY determine the execution environment
-const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined';
-const isReactNativeWebView = isBrowser && !!window.ReactNativeWebView;
-
-// 3. Promise Queue for Asynchronous getItem Resolution (WebView only)
-const nativeStorageQueue = {}; 
-
-function generateTransactionId() {
-    return Math.random().toString(36).substring(2, 15);
-}
-
-// Global function called by the React Native side 
-function resolveNativeStorageResponse(message) {
-    if (message.type !== 'STORAGE_RESPONSE') return;
-    const { txId, value, error } = message;
-    const promiseHandlers = nativeStorageQueue[txId];
-
-    if (promiseHandlers) {
-        delete nativeStorageQueue[txId];
-        if (error) {
-            console.error(`WebView Storage Error (Tx:${txId}):`, error);
-            promiseHandlers.reject(new Error(error));
-        } else {
-            promiseHandlers.resolve(value); 
-        }
-    }
-}
-
-// Sends a storage operation request to the native side
-function sendNativeStorageRequest(action, key, value = null) {
-    if (!isReactNativeWebView) {
-        return Promise.reject(new Error("Attempted native storage outside WebView."));
-    }
-
-    const txId = generateTransactionId();
-
-    return new Promise((resolve, reject) => {
-        // 🔑 FIX: Store ALL promises in the queue, regardless of action.
-        // This forces the JS to wait until the native side sends a response.
-        nativeStorageQueue[txId] = { resolve, reject };
-
-        try {
-            console.log(`[WebView] Sending ${action} request for key: ${key}, TxID: ${txId}`);
-            
-            window.ReactNativeWebView.postMessage(
-                JSON.stringify({
-                    type: "STORAGE_OPERATION",
-                    action: action,
-                    key: key,
-                    value: value,
-                    txId: txId, 
-                })
-            );
-        } catch (e) {
-            // Clean up the promise queue if the postMessage itself failed
-            if (nativeStorageQueue[txId]) delete nativeStorageQueue[txId]; 
-            console.error("Failed to send native storage request:", e);
-            reject(e);
-        }
-    });
-}
-
-
-/* ------------------------------------------------ */
-/* --- EXPORTED ASYNCHRONOUS FUNCTIONS --- */
-/* ------------------------------------------------ */
-
-async function getItem(key) {
-    const fullKey = STORAGE_KEY_PREFIX + key;
-    if (!isBrowser) return null;
-    
-    if (isReactNativeWebView) {
-        return sendNativeStorageRequest('getItem', fullKey);
-    } else {
-        return Promise.resolve(localStorage.getItem(fullKey));
-    }
-}
-
-async function setItem(key, value) {
-    const fullKey = STORAGE_KEY_PREFIX + key;
-    if (!isBrowser) return;
-
-    if (isReactNativeWebView) {
-        return sendNativeStorageRequest('setItem', fullKey, value);
-    } else {
-        localStorage.setItem(fullKey, value);
-        return Promise.resolve();
-    }
-}
-
-async function removeItem(key) {
-    const fullKey = STORAGE_KEY_PREFIX + key;
-    if (!isBrowser) return;
-
-    if (isReactNativeWebView) {
-        return sendNativeStorageRequest('removeItem', fullKey);
-    } else {
-        localStorage.removeItem(fullKey);
-        return Promise.resolve();
-    }
-}
-
-/* ------------------------------------------------ */
-/* --- GLOBAL SCOPE INITIALIZATION (Client Only) --- */
-/* ------------------------------------------------ */
-
-// 4. Create a global Storage object for easy access in other dashboard scripts
-if (isBrowser) {
-    // Assign the exports to the global window object for use in the static HTML file
-    window.Storage = {
-        getItem: getItem,
-        setItem: setItem,
-        removeItem: removeItem,
-    };
-
-    // Attach the global listener for native replies
-    if (isReactNativeWebView) {
-    // ⚠️ CRITICAL FIX: Listen on the window object for the event dispatched by RN.
-    window.addEventListener('message', (event) => {
-        try {
-            // event.data may be a JSON string or already an object depending on
-            // how the native side injected the message. Handle both.
-            let data = event.data;
-            if (typeof data === 'string') {
-                data = JSON.parse(data);
-            }
-
-            if (data && data.type === 'STORAGE_RESPONSE') {
-                resolveNativeStorageResponse(data);
-            }
-        } catch (e) {
-            console.error("Error parsing native response in listener:", e);
-        }
-    });
-}
-}
-
-</script>
-
+</div>
 <script>
 /* ------------------------------------------------ */
 /* --- GLOBAL VARIABLES --- */
@@ -835,12 +679,12 @@ const getCleanedSection = (field, label, medicationName) => {
 
 async function fetchDrugDetails(medicationName) {
     // 1. SAFETY CHECK: Get User ID safely
-    const userStr = await Storage.getItem('loggedInUser');
+    const userStr = localStorage.getItem('loggedInUser');
     if (!userStr) return { name: medicationName, error: "User not logged in" };
     
     const userId = JSON.parse(userStr).id;
     const cacheKey = `drugDetailsCache_${userId}`;
-    let cache = JSON.parse(await Storage.getItem(cacheKey) || '{}');
+    let cache = JSON.parse(localStorage.getItem(cacheKey) || '{}');
     
     // 2. CHECK CACHE
     const cachedEntry = cache[medicationName];
@@ -894,7 +738,7 @@ async function fetchDrugDetails(medicationName) {
             fetchedTime: now,
             data: parsedDetails
         };
-        await Storage.setItem(cacheKey, JSON.stringify(cache));
+        localStorage.setItem(cacheKey, JSON.stringify(cache));
 
         return parsedDetails;
 
@@ -1102,30 +946,9 @@ function showSymptomModal(medId, time, callback) {
     document.querySelectorAll('#symptomButtons .symptom-btn').forEach(btn => {
         btn.classList.remove('active');
     });
-    // Ensure the cancel button is visible and focus it for accessibility
-    try {
-        const closeBtn = document.getElementById('symptomClose');
-        if (closeBtn) {
-            closeBtn.style.display = 'inline-block';
-            closeBtn.setAttribute('tabindex', '0');
-            console.log('Symptom modal opened. Close button present:', !!closeBtn);
-            // Focus after a short delay to allow the modal to display
-            setTimeout(() => { try { closeBtn.focus(); } catch(e){} }, 50);
-        } else {
-            console.warn('Symptom close button not found in DOM');
-        }
-    } catch (e) {
-        console.error('Error preparing symptom modal close button:', e);
-    }
-
     document.getElementById('symptomOverlay').classList.remove('hidden');
 }
-document.getElementById("scanBottleBtn").addEventListener("click", function () {
-    // Send a message to your Expo WebView to start scanning
-    window.ReactNativeWebView.postMessage(JSON.stringify({
-        type: "SCAN_REQUEST"
-    }));
-});
+
 function toggleSymptom(event) {
     const symptom = event.target.dataset.symptom;
     if (selectedSymptoms.has(symptom)) {
@@ -1150,27 +973,7 @@ function submitSymptoms() {
     symptomCallback = null;
     selectedSymptoms.clear();
 }
-function closeSymptoms() {
-    // 1. If a callback exists, call it with null to signal cancellation or completion.
-    // In a real application, you might modify this to pass the selectedSymptoms if this
-    // function were also used for *saving*, but based on the original function, we use null.
-    if (symptomCallback && currentLogEntry) {
-        // Passing null suggests the action was cancelled or no data was saved.
-        symptomCallback(currentLogEntry.medId, currentLogEntry.time, null);
-    }
 
-    // 2. Hide the symptom overlay UI element.
-    const overlay = document.getElementById('symptomOverlay');
-    if (overlay) {
-        overlay.classList.add('hidden');
-    }
-    currentLogEntry = null;
-    symptomCallback = null;
-    
-    if (typeof selectedSymptoms !== 'undefined' && typeof selectedSymptoms.clear === 'function') {
-        selectedSymptoms.clear();
-    }
-}
 function cancelSymptoms() {
     if (symptomCallback && currentLogEntry) {
         symptomCallback(currentLogEntry.medId, currentLogEntry.time, null);
@@ -1181,19 +984,11 @@ function cancelSymptoms() {
     selectedSymptoms.clear();
 }
 
-// Close without logging (do not call the symptom callback)
-function closeSymptomModal() {
-    document.getElementById('symptomOverlay').classList.add('hidden');
-    currentLogEntry = null;
-    symptomCallback = null;
-    selectedSymptoms.clear();
-}
-
 /* ------------------------------------------------ */
 /* --- MAIN DASHBOARD LOGIC --- */
 /* ------------------------------------------------ */
 async function loadData() {
-    const loggedInUser = JSON.parse(await Storage.getItem('loggedInUser'));
+    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
     if (!loggedInUser) {
         document.getElementById('heading').textContent = 'Please Log In';
         document.getElementById('info').textContent = 'You are not authenticated.';
@@ -1547,11 +1342,11 @@ function renderCharts() {
 }
 
 /* --- INITIALIZATION --- */
-async function seedData() {
+function seedData() {
     const patientId = "patient1";
-    if (!await Storage.getItem('users')) {
-        await Storage.setItem('users', JSON.stringify([{ id: patientId, firstName: "Patient1", lastName: "Sample", email: "alex@test.com", password: "password" }]));
-        await Storage.setItem('loggedInUser', JSON.stringify({ id: patientId, firstName: "Patient1", lastName: "Sample" }));
+    if (!localStorage.getItem('users')) {
+        localStorage.setItem('users', JSON.stringify([{ id: patientId, firstName: "Patient1", lastName: "Sample", email: "alex@test.com", password: "password" }]));
+        localStorage.setItem('loggedInUser', JSON.stringify({ id: patientId, firstName: "Patient1", lastName: "Sample" }));
     }
     let meds = loadMeds();
     if (!meds[patientId] || meds[patientId].length === 0) {
@@ -1561,13 +1356,12 @@ async function seedData() {
     let petStatusStore = loadAllPetStatus();
     if (!petStatusStore[patientId]) {
         petStatusStore[patientId] = DEFAULT_PET_STATUS;
-        // Save to the same storage location used by loadAllPetStatus()/savePetStatus()
         localStorage.setItem('petStatus', JSON.stringify(petStatusStore));
     }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await seedData(); 
+    seedData(); 
     await loadData();
 
     document.querySelectorAll('.tab-nav button').forEach(button => button.addEventListener('click', handleTabClick));
@@ -1581,9 +1375,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('symptomSubmit').addEventListener('click', submitSymptoms);
     document.getElementById('symptomCancel').addEventListener('click', cancelSymptoms);
-    document.getElementById("symptomClose").addEventListener("click", () => {
-  document.getElementById("symptomOverlay").classList.add("hidden");
-}); 
+    document.querySelectorAll('#symptomButtons .symptom-btn').forEach(btn => btn.addEventListener('click', toggleSymptom));
+    document.getElementById('symptomOverlay').addEventListener('click', (e) => { if (e.target.id === 'symptomOverlay') cancelSymptoms(); });
 });
 </script>
 </body>
